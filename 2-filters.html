@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Filters</title>
+    <link rel="stylesheet" href="css/foundation.min.css"/>
+</head>
+<body ng-app="myApp" ng-controller="AppCtrl">
+
+<h1>{{ "texto con filtro uppercase"|uppercase }}</h1>
+<h1>{{ 3500000|number:"2" }}</h1>
+<h1>{{ 3500000|currency }}</h1>
+<h1>{{ hoy|date }}</h1>
+<h1>{{ hoy|date:"dd/MM/yyyy" }}</h1>
+
+<input type="text" ng-model="filtro"/>
+<ul>
+    <li ng-repeat="persona in personas|filter:filtro">{{persona}}</li>
+</ul>
+
+<br>
+<input type="text" ng-model="texto"/>
+<h2>{{texto|reverse}}</h2>
+
+
+<script type="text/javascript" src="js/angular.min.js"></script>
+
+<script type="text/javascript">
+    var myApp = angular.module("myApp", []);
+
+    myApp.controller("AppCtrl", function($scope){
+        $scope.hoy = new Date();
+        $scope.personas = ["Juan", "Maria", "Ana", "Seba", "Michelle", "Evelyn"];
+    });
+
+    myApp.filter("reverse", function(){
+        return function(input) {
+            if (input)
+                return input.split("").reverse().join("");
+        };
+    });
+
+</script>
+
+</body>
+</html>

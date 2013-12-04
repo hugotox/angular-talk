@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Services</title>
+    <link rel="stylesheet" href="css/foundation.min.css"/>
+</head>
+<body ng-app="serviceApp" ng-controller="AppCtrl">
+
+    <input type="text" ng-model="repo"/>
+
+    <button ng-click="llamar_servicio()">Cargar datos</button>
+
+    <ul>
+        <li ng-repeat="issue in issues">
+            <a ng-click="set_issue(issue.body)">{{issue.title}}</a>
+        </li>
+    </ul>
+
+    <br>
+
+    <pre>{{selected_issue}}</pre>
+
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript">
+
+    var serviceApp = angular.module("serviceApp", []);
+
+    serviceApp.factory("mi_servicio", function($http){
+        return {
+            get_repo_pulls: function(repo) {
+                return $http({
+                    method: "JSONP",
+                    url: "https://api.github.com/repos/"+repo+"/pulls?callback=JSON_CALLBACK"
+                })
+            }
+        };
+    });
+
+    serviceApp.controller('AppCtrl', ['$scope', '$http', 'mi_servicio', function($scope, $http, mi_servicio){
+
+        var url = "https://api.github.com/repos/angular/angular.js/issues?callback=JSON_CALLBACK";
+
+        $scope.cargar_datos = function(){
+            console.log("cargando datos...");
+            $http({
+                method: "JSONP",
+                url: url
+            }).success(function(data, status, headers){
+                $scope.issues = data.data;
+            });
+        };
+
+        $scope.set_issue = function(issue) {
+            $scope.selected_issue = issue;
+            return false;
+        };
+
+        $scope.llamar_servicio = function(){
+            if($scope.repo){
+                $scope.issues = [];
+                mi_servicio.get_repo_pulls($scope.repo)
+                    .success(function(data, status, headers){
+                        $scope.issues = data.data;
+                    });
+            }
+        };
+    }]);
+
+
+</script>
+</body>
+</html>

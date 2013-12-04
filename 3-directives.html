@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Directives</title>
+    <link rel="stylesheet" href="css/foundation.min.css"/>
+</head>
+<body ng-app="superheroes" ng-controller="Ctrl">
+
+    <superman></superman>
+
+    <div flash></div>
+
+    <div enter="volar()" leave="panel">Algun contenido</div>
+
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript">
+
+    var myApp = angular.module("superheroes", []);
+
+    myApp.controller("Ctrl", function($scope) {
+        $scope.volar = function(){
+            console.log("Estoy volando!!!");
+        };
+    });
+
+    myApp.directive("superman", function(){
+        return {
+            restrict: "E",  // se puede usar para (E)lement, (A)ttribute, (C)class y (M): comment
+            template: '<div class="panel">Soy superman!!!</div>'
+        };
+    });
+
+    myApp.directive("flash", function(){
+        return {
+            restrict: "A",
+            link: function(){
+                console.log("Este fue Flash!!");
+            }
+        };
+    });
+
+    myApp.directive("enter", function(){
+        return function(scope, element, attrs){
+            element.bind("mouseenter", function(){
+                element.addClass(attrs.enter);
+                scope.$apply(attrs.enter);
+            });
+        };
+    });
+    myApp.directive("leave", function(){
+        return function(scope, element, attrs){
+            element.bind("mouseleave", function(){
+                element.removeClass(attrs.leave);
+            });
+        };
+    });
+
+</script>
+</body>
+</html>
