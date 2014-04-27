@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AngularJS Fun</title>
+    <link rel="stylesheet" href="css/foundation.min.css"/>
+</head>
+<body ng-app="myApp" ng-controller="AppCtrl">
+
+<input type="text" ng-model="name"/>
+
+<button ng-click="uppercase(name)">Say hello</button>
+
+<h1>Hello {{name|reverse}}</h1>
+
+<select ng-model="name">
+    <option>Garrett</option>
+    <option>Jacob</option>
+    <option>Mauricio</option>
+    <option>Naoko</option>
+</select>
+
+<div >
+    from my div: {{name}}
+</div>
+
+<superman></superman>
+
+
+<div enter="panel" leave="panel">Algun contenido</div>
+
+<h1>Angularjs issues:</h1>
+
+<ul>
+    <li ng-repeat="issue in issues">{{issue.title}}</li>
+</ul>
+
+
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript">
+
+    var app = angular.module('myApp', []);
+
+    app.controller('AppCtrl', function($scope, $http){
+        $scope.name = "Chile";
+
+        $scope.sayHello = function(){
+            alert("hello " + $scope.name)
+        }
+
+        $scope.uppercase = function(input){
+            console.log("boo " + input);
+        }
+
+
+        var url = "https://api.github.com/repos/angular/angular.js/issues?callback=JSON_CALLBACK"
+
+        $http({
+            method: "JSONP",
+            url: url
+        }
+
+        ).success(function(data, status, headers){
+            $scope.issues = data.data;
+        })
+
+    });
+
+    app.filter("reverse", function(){
+        return function(input) {
+            if (input)
+                return input.split("").reverse().join("");
+        };
+    });
+
+    app.directive("superman", function(){
+        return {
+            restrict: "E",  // se puede usar para (E)lement, (A)ttribute, (C)class y (M): comment
+            template: '<div enter="panel" leave="panel">Some content</div>'
+        };
+    });
+
+
+
+    app.directive("enter", function(){
+        return function(scope, element, attrs){
+            element.bind("mouseenter", function(){
+                element.addClass(attrs.enter);
+            });
+        };
+    });
+    app.directive("leave", function(){
+        return function(scope, element, attrs){
+            element.bind("mouseleave", function(){
+                element.removeClass(attrs.leave);
+            });
+        };
+    });
+
+
+
+
+
+</script>
+</body>
+</html>
